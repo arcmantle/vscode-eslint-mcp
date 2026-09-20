@@ -1,0 +1,19 @@
+name: Publish Extension
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run package
+      - run: npm exec vsce publish -- --no-dependencies --pat "${{ secrets.VS_MARKETPLACE_PAT }}"
